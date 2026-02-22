@@ -1,9 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../libs/utilies.js";
+import { sendWelcomeEmail } from "../email/emailHandler.js";
 export const signup = async (req, res) => {
     try {
-        const { fullName, email, password } = req.body;
+        let { fullName, email, password } = req.body;
         fullName = fullName.trim();
         email = email.trim().toLowerCase();
     // Validation
@@ -36,15 +37,20 @@ export const signup = async (req, res) => {
         password:hashedPassword // we are storing the hashed password in the database, not the plain text password
     });
     if(newuser){
-        await newuser.save();
-        const token = generateToken(newuser._id, res);
+        const savedUser=await newuser.save();
+        const token = generateToken(savedUser._id, res);
         res.status(201).json({
             _id:newuser._id,
             fullName:newuser.fullName,
             email:newuser.email,
             profilePic:newuser.profilePic,
-            token: token,
+           
         });
+        try {
+            await sendWelcomeEmail(savedUser.email,savedUser.fullName,process.env.CLIENT_URL); //client URL is the URL of the frontend application, which we will use in the welcome email template to provide a link for the user to open the app.
+        } catch (error) {
+             console.error("Failed to send welcome email:", error);
+        }
     }
     else{
         res.status(400).json({message:"invalid user data"});
