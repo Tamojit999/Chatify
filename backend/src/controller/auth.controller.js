@@ -2,18 +2,18 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../libs/utilies.js";
 import { sendWelcomeEmail } from "../email/emailHandler.js";
-import dotenv from "dotenv";
-dotenv.config(); // Load environment variables from .env file
+import cloudinary from "../libs/cloudinary.js";
 
 export const signup = async (req, res) => {
     try {
         let { fullName, email, password } = req.body;
-        fullName = fullName.trim();
-        email = email.trim().toLowerCase();
+        
         // Validation
         if (!fullName || !email || !password) {
             return res.status(400).json({ message: "Please provide all the required fields" });
         }
+        fullName = fullName.trim();
+        email = email.trim().toLowerCase();
         if (password.length < 6) {
             return res.status(400).json({ message: "Password must be at least 6 characters long" });
         }
@@ -71,11 +71,12 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     try {
         let { email, password } = req.body;
-        email = email.trim().toLowerCase();
-        password = password.trim();
-        if (!email || !password) {
+
+        if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
             return res.status(400).json({ message: "Please provide all the required fields" });
         }
+
+        email = email.trim().toLowerCase();
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "Invalid email or password" });
@@ -101,5 +102,26 @@ export const login = async (req, res) => {
 export const logout =(_, res) => {
     res.cookie("jwt","",{ maxAge: 0 }); // we are setting the cookie with an empty value and maxAge of 0, which will effectively delete the cookie from the client's browser. the name  of the cookie will be same as the the name we used to set the cookie in the generateToken function, which is "jwt" in this case.
     res.status(200).json({message:"Logged out successfully"});
+};
+export const updateProfile = async (req, res) => {
+   try {
+    const {profilePic}=req.body;
+    if(!profilePic)
+    {
+        return res.status(400).json({message:"Profile picture is required"});
+    }
+    const uploadResponse=await cloudinary.uploader.upload(profilePic);
+    const user_id=req.user._id; // we can access the user object from the req object, because we have attached the user object to the req object in the protectRoute middleware.
+    const updatedUser=await User.findByIdAndUpdate(
+        user_id,
+        {profilePic:uploadResponse.secure_url},
+        {new:true} // this option will return the updated user object in the response, instead of the old user object.
+    ).select("-password"); // we are selecting all the fields except the password field, because we don't want to send the password field in the response.
+    res.status(200).json(updatedUser);
+    
+   } catch (error) {
+    console.log("Error in updateProfile controller:", error);
+    res.status(500).json({ message: "Server error" });
+   }
 };
 
