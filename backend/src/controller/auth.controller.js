@@ -49,11 +49,9 @@ export const signup = async (req, res) => {
                 profilePic: newuser.profilePic,
 
             });
-            try {
-                await sendWelcomeEmail(savedUser.email, savedUser.fullName, process.env.CLIENT_URL); //client URL is the URL of the frontend application, which we will use in the welcome email template to provide a link for the user to open the app.
-            } catch (error) {
-                console.error("Failed to send welcome email:", error);
-            }
+            // Fire-and-forget: don't await since response is already sent
+            sendWelcomeEmail(savedUser.email, savedUser.fullName, process.env.CLIENT_URL)
+                .catch((error) => console.error("Failed to send welcome email:", error));
         }
         else {
             res.status(400).json({ message: "invalid user data" });

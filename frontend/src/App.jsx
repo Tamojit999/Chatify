@@ -3,7 +3,7 @@ import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { useAuthStore } from "./store/useAuthStore";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader";
 export default function App() {

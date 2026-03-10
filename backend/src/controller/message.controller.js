@@ -83,7 +83,7 @@ export const sendMessage = async (req, res) => {
 
 export const getChatPartners = async (req, res) => {
   try {
-    const loggedInUserId = req.user._id;
+    const loggedInUserId = new mongoose.Types.ObjectId(req.user._id);
 
     const partnerAgg = await Message.aggregate([
       {
