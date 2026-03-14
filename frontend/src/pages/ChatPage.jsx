@@ -15,8 +15,8 @@ const ChatPage = () => {
      <div className="relative w-full max-w-6xl h-[800px]">
         <BorderAnimatedContainer>
           
-        {/* LEFT SIDE */}
-        <div className="w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col">
+        {/* LEFT SIDE — hidden on small screens when a user is selected */}
+        <div className={`w-full lg:w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col ${selectedUser ? "hidden lg:flex" : "flex"}`}>
          <ProfileHeader />
           <ActiveTabSwitch />
 
@@ -25,8 +25,8 @@ const ChatPage = () => {
           </div>
          
         </div>
-           {/* RIGHT SIDE */}
-        <div className="flex-1 flex flex-col bg-slate-900/50 backdrop-blur-sm">
+           {/* RIGHT SIDE — hidden on small screens when no user is selected */}
+        <div className={`flex-1 flex flex-col bg-slate-900/50 backdrop-blur-sm ${selectedUser ? "flex" : "hidden lg:flex"}`}>
           {selectedUser ? <ChatContainer /> : <NoConversationPlaceholder />}
         </div>
           
