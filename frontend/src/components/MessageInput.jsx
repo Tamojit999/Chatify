@@ -43,7 +43,7 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 border-t border-slate-700/50">
+    <div className="p-3 sm:p-4 border-t border-slate-700/50">
       {imagePreview && (
         <div className="max-w-3xl mx-auto mb-3 flex items-center">
           <div className="relative">
@@ -64,7 +64,7 @@ const MessageInput = () => {
       )}
       <form
         onSubmit={handleSendMessage}
-        className="max-w-3xl mx-auto flex space-x-4"
+        className="max-w-3xl mx-auto flex space-x-2 sm:space-x-4"
       >
         <input
           type="text"
@@ -73,7 +73,7 @@ const MessageInput = () => {
             setText(e.target.value);
             if (isSoundEnabled) playRandomKeyStrokeSound();
           }}
-          className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4"
+          className="flex-1 min-w-0 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-3 sm:px-4"
           placeholder="Type your message..."
         />
         <input
@@ -90,7 +90,7 @@ const MessageInput = () => {
               fileInputRef.current.click();
             }
           }}
-          className={`bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-lg px-4 transition-colors ${
+          className={`bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-lg px-3 sm:px-4 transition-colors ${
             imagePreview ? "text-cyan-500" : ""
           }`}
         >

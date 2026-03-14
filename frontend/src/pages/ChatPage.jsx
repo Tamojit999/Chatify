@@ -12,7 +12,7 @@ import NoConversationPlaceholder from "../components/NoConversationPlaceholder";
 const ChatPage = () => {
    const { activeTab, selectedUser } = useChatStore();
   return (
-     <div className="relative w-full max-w-6xl h-[800px]">
+     <div className="relative w-full max-w-6xl h-[calc(100dvh-2rem)] lg:h-[800px]">
         <BorderAnimatedContainer>
           
         {/* LEFT SIDE — hidden on small screens when a user is selected */}
